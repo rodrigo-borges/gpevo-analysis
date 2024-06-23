@@ -37,21 +37,19 @@ def get_racer_teams(car_ids:pd.Series) -> pd.Series:
 def get_standings_df(race_id:str, format_text:bool=False) -> pd.DataFrame:
     standings_dict:dict = races_dict[race_id]["standings"]
     _df:pd.DataFrame = pd.DataFrame.from_records(list(standings_dict.values()))
-    _df["elapsed_time"] = _df["elapsed_time"].where(_df["finished"], None)
-    _df = _df.drop(columns=["finished"])
-    _df = _df.rename(columns={"car_id":"Corredor", "elapsed_time":"Tempo", "max_progress":"Distância"})
-    #_df = _df.sort_values(["Tempo", "Distância"], ascending=[True, False])
+    _df = _df.rename(columns={"car_id":"Corredor", "finished":"Concluiu", "elapsed_time":"Tempo", "max_progress":"Distância"})
+    _df = _df.sort_values(["Tempo", "Distância"], ascending=[True, False])
     _df = _df.reset_index(drop=True)
     _df["Posição"] = _df.index+1
     _df = _df.set_index(_df["Corredor"])
     _df.index.name = None
     _df["Equipe"] = get_racer_teams(_df["Corredor"])
     _df["Corredor"] = get_racer_names(_df["Corredor"])
-    _df = _df.reindex(columns=["Posição", "Corredor", "Tempo", "Distância", "Equipe"])
+    _df = _df.reindex(columns=["Posição", "Corredor", "Concluiu", "Tempo", "Distância", "Equipe"])
     if format_text:
         _df["Distância"] = _df["Distância"].apply(lambda x: f"{x:.1f}m")
         _df["Tempo"] = _df["Tempo"].apply(lambda x: f"{x:.1f}s")
-        _df["Tempo"] = _df["Tempo"].where(_df["Tempo"].isna(), "DNF")
+        _df["Tempo"] = _df["Tempo"].where(_df["Concluiu"], "DNF")
     return _df
 
 def get_min_time(df:pd.DataFrame) -> pd.Series:
