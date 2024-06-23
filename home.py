@@ -59,6 +59,7 @@ def get_4th_time(df:pd.DataFrame) -> pd.Series:
     return df.loc[df["finished"]]["elapsed_time"].min()
 
 def get_Nth_best(series:pd.Series, n:int=0, asc:bool=True) -> float:
+    return series.max()
     return series.sort_values(ascending=asc, ignore_index=True)[n]
 
 def get_evolution_df(exp_id:str) -> pd.DataFrame:
