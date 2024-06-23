@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.subplots as subplots
 import streamlit as st
+import zipfile
 
 
 def get_racer_name(car_id:str) -> str:
@@ -119,74 +120,19 @@ def get_evolution_plot(exp_id:str) -> go.Figure:
     return fig
 
 
-with st.expander("Arquivos"):
-    experiments_file = st.file_uploader("Experiments JSON", type="json")
-    races_file = st.file_uploader("Races JSON", type="json")
-    cars_file = st.file_uploader("Cars JSON", type="json")
+zip_file = st.file_uploader("ZIP", type="zip")
 
-experiments_dict:dict
-races_dict:dict
-cars_dict:dict
+if zip_file is not None:
 
-if experiments_file is not None:
-    experiments_dict = json.load(experiments_file)
-if races_file is not None:
-    races_dict = json.load(races_file)
-if cars_file is not None:
-    cars_dict = json.load(cars_file)
-
-team_summary_dict:dict = {
-    "População inicial":{
-        "Treino 0":{
-            "evolution_exp":"0x00000",
-            "evolution_video":"https://youtu.be/XcK_wWTky7Y",
-            "simulation_exp":[],
-            "simulation_video":"",},},
-    "Bem Aleatório":{
-        "Treino 1":{
-            "evolution_exp":"0x00006",
-            "evolution_video":"https://youtu.be/TUP7-_piQ-w",
-            "simulation_exp":["0x00008", "0x00009"],
-            "simulation_video":"https://youtu.be/_pKLgo6hEVM",},},
-    "BFS":{
-        "Treino 1":{
-            "evolution_exp":"0x00005",
-            "evolution_video":"https://youtu.be/h4Jt8J1bpzs",
-            "simulation_exp":["0x00008", "0x00009"],
-            "simulation_video":"https://youtu.be/_pKLgo6hEVM",},},
-    "Machos Alfanuméricos":{
-        "Treino 1":{
-            "evolution_exp":"0x00001",
-            "evolution_video":"https://youtu.be/ptbGXLUzOMg",
-            "simulation_exp":["0x00008", "0x00009"],
-            "simulation_video":"https://youtu.be/_pKLgo6hEVM",},},
-    "Marcha-atrás":{
-        "Treino 1":{
-            "evolution_exp":"0x00007",
-            "evolution_video":"https://youtu.be/xT-9g-NQevM",
-            "simulation_exp":["0x00008", "0x00009"],
-            "simulation_video":"https://youtu.be/_pKLgo6hEVM",},},
-    "Meta-morfada":{
-        "Treino 1":{
-            "evolution_exp":"0x00004",
-            "evolution_video":"https://youtu.be/hQToGi5qV8A",
-            "simulation_exp":["0x00008", "0x00009"],
-            "simulation_video":"https://youtu.be/_pKLgo6hEVM",},},
-    "Quimera":{
-        "Treino 1":{
-            "evolution_exp":"0x00003",
-            "evolution_video":"https://youtu.be/jkQdf2Qg4Vo",
-            "simulation_exp":["0x00008", "0x00009"],
-            "simulation_video":"https://youtu.be/_pKLgo6hEVM",},},
-    "Viúvas do Funhaus":{
-        "Treino 1":{
-            "evolution_exp":"0x00002",
-            "evolution_video":"https://youtu.be/zPKnj4imBEk",
-            "simulation_exp":["0x00008", "0x00009"],
-            "simulation_video":"https://youtu.be/_pKLgo6hEVM",},},
-}
-
-if experiments_dict and races_dict and cars_dict:
+    with zipfile.ZipFile(zip_file) as z:
+        with z.open("experiments.json") as f:
+            experiments_dict = json.load(f)
+        with z.open("races.json") as f:
+            races_dict = json.load(f)
+        with z.open("cars.json") as f:
+            cars_dict = json.load(f)
+        with z.open("summary.json") as f:
+            team_summary_dict = json.load(f)
 
     team:str = st.selectbox(
         "Equipe", team_summary_dict.keys())
