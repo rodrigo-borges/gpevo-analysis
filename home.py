@@ -40,7 +40,7 @@ def get_standings_df(race_id:str, format_text:bool=False) -> pd.DataFrame:
     _df["elapsed_time"] = _df["elapsed_time"].where(_df["finished"], None)
     _df = _df.drop(columns=["finished"])
     _df = _df.rename(columns={"car_id":"Corredor", "elapsed_time":"Tempo", "max_progress":"Distância"})
-    _df = _df.sort_values(["Tempo", "Distância"], ascending=[True, False])
+    #_df = _df.sort_values(["Tempo", "Distância"], ascending=[True, False])
     _df = _df.reset_index(drop=True)
     _df["Posição"] = _df.index+1
     _df = _df.set_index(_df["Corredor"])
