@@ -50,8 +50,8 @@ def get_standings_df(race_id:str, format_text:bool=False) -> pd.DataFrame:
     _df = _df.reindex(columns=["Posição", "Corredor", "Tempo", "Distância", "Equipe"])
     if format_text:
         _df["Distância"] = _df["Distância"].apply(lambda x: f"{x:.1f}m")
-        _df["Tempo"] = _df["Tempo"].apply(lambda x: f"{x:.1f}s")
-        _df["Tempo"] = _df["Tempo"].where(_df["Tempo"].isna(), "DNF")
+        _df["Tempo"] = _df["Tempo"].where(_df["Tempo"].isnull(), _df["Tempo"].apply(lambda x: f"{x:.1f}s"))
+        _df["Tempo"] = _df["Tempo"].where(~_df["Tempo"].isnull(), "DNF")
     return _df
 
 def get_min_time(df:pd.DataFrame) -> pd.Series:
