@@ -158,7 +158,7 @@ if zip_file is not None:
         standings_df:pd.DataFrame = get_standings_df(
             exp_dict["exhibition_race"], True)
         st.write("Resultado final")
-        st.dataframe(standings_df)
+        st.dataframe(standings_df, use_container_width=True)
 
         fig:go.Figure = get_evolution_plot(exp_id)
         st.plotly_chart(fig)
@@ -177,4 +177,4 @@ if zip_file is not None:
             standings_df:pd.DataFrame = get_standings_df(
             exp_dict["exhibition_race"], True)
             st.write("Resultado final")
-            st.dataframe(standings_df)
+            st.dataframe(standings_df, use_container_width=True)
